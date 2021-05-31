@@ -1,12 +1,19 @@
 package com.br.sales.starwars.controller
 
+import com.br.sales.starwars.model.MessageResponse
 import com.br.sales.starwars.model.Planet
+import com.br.sales.starwars.service.PlanetService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/planets")
 class PlanetController {
+
+    @Autowired
+    lateinit var planetService: PlanetService
 
     @GetMapping("/hello")
     fun helloWorld(): String {
@@ -15,9 +22,13 @@ class PlanetController {
     }
 
     @PostMapping()
-    fun create(@RequestBody planet: Planet): ResponseEntity<Planet> {
+    fun create(@RequestBody planet: Planet): ResponseEntity<MessageResponse> {
 
-        return ResponseEntity.ok().build()
+        planetService.create(planet)
+
+        val message = MessageResponse("OK", "Planeta criado com sucesso")
+
+        return ResponseEntity(message, HttpStatus.CREATED)
     }
 
     @GetMapping("/{id}")
